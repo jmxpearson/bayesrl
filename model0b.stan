@@ -1,3 +1,6 @@
+// Model 0b:
+// Model 0a + different learning rates for chosen and unchosen options
+
 data {
     int<lower = 0> N;  // number of observations
     int<lower = 0> Nsub;  // number of subjects
@@ -13,6 +16,7 @@ data {
 parameters {
     vector[Nsub] beta;  // softmax parameter
     real<lower = 0, upper = 1> alpha[Nsub];  // learning rate
+    real<lower = 0, upper = 1> alphau[Nsub];  // learning rate: unchosen option
 }
 
 transformed parameters {
@@ -37,9 +41,14 @@ transformed parameters {
                 // prediction error: chosen option
                 Delta[sub[idx], trial[idx], chosen[idx]] <- outcome[idx] - Q[sub[idx], trial[idx], chosen[idx]];
 
+                // prediction error: unchosen option
+                Delta[sub[idx], trial[idx], unchosen[idx]] <- (1 - outcome[idx]) - Q[sub[idx], trial[idx], unchosen[idx]];
+
                 // update chosen option
                 Q[sub[idx], trial[idx], chosen[idx]] <- Q[sub[idx], trial[idx], chosen[idx]] + alpha[sub[idx]] * Delta[sub[idx], trial[idx], chosen[idx]];
 
+                // update unchosen option
+                Q[sub[idx], trial[idx], chosen[idx]] <- Q[sub[idx], trial[idx], unchosen[idx]] + alphau[sub[idx]] * Delta[sub[idx], trial[idx], unchosen[idx]];
         }
     }
 }
@@ -47,6 +56,7 @@ transformed parameters {
 model {
     beta ~ normal(0, 5);
     alpha ~ beta(1, 1);
+    alphau ~ beta(1, 1);
     for (idx in 1:N) {
         if (chosen[idx] > 0) {
             1 ~ bernoulli_logit(beta[sub[idx]] * (Q[sub[idx], trial[idx], chosen[idx]] - Q[sub[idx], trial[idx], unchosen[idx]]));

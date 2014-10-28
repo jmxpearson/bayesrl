@@ -1,3 +1,6 @@
+// Model 0a:
+// Model 0 + Evidence for A is evidence against B
+
 data {
     int<lower = 0> N;  // number of observations
     int<lower = 0> Nsub;  // number of subjects
@@ -37,9 +40,14 @@ transformed parameters {
                 // prediction error: chosen option
                 Delta[sub[idx], trial[idx], chosen[idx]] <- outcome[idx] - Q[sub[idx], trial[idx], chosen[idx]];
 
+                // prediction error: unchosen option
+                Delta[sub[idx], trial[idx], unchosen[idx]] <- (1 - outcome[idx]) - Q[sub[idx], trial[idx], unchosen[idx]];
+
                 // update chosen option
                 Q[sub[idx], trial[idx], chosen[idx]] <- Q[sub[idx], trial[idx], chosen[idx]] + alpha[sub[idx]] * Delta[sub[idx], trial[idx], chosen[idx]];
 
+                // update unchosen option
+                Q[sub[idx], trial[idx], chosen[idx]] <- Q[sub[idx], trial[idx], unchosen[idx]] + alpha[sub[idx]] * Delta[sub[idx], trial[idx], unchosen[idx]];
         }
     }
 }
