@@ -25,6 +25,10 @@ if __name__ == '__main__':
     # now set those trials appropriately
     df_red.loc[left_chosen, 'Unchosen'] = df_red.loc[left_chosen, 'CueR']
 
+    # don't repeat trial numbers within subject
+    Ntrials = np.max(df_red['TrialNum'].unique())
+    df_red['Trial'] = df_red['TrialNum'] + df_red['RunNum'] * Ntrials
+
     # drop redundant columns
     df_red = df_red.drop(['CueLeftPic', 'CueRightPic', 
         'CueChosen', 'CueL', 'CueR'], axis=1)
