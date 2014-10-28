@@ -12,7 +12,7 @@ data {
 
 parameters {
     vector[Nsub] beta;  // softmax parameter
-    vector[Nsub] alpha;  // learning rate
+    real<lower = 0, upper = 1> alpha[Nsub];  // learning rate
 }
 
 transformed parameters {
@@ -31,12 +31,12 @@ transformed parameters {
                 Q[sub[idx], trial[idx], c] <- Q[sub[idx], trial[idx] - 1, c];
                 Delta[sub[idx], trial[idx], c] <- 0;
             }
-            if (chosen[idx] > 0) {
+        }
+
+        if (outcome[idx] >= 0) {
                 Delta[sub[idx], trial[idx], chosen[idx]] <- outcome[idx] - Q[sub[idx], trial[idx], chosen[idx]];
 
                 Q[sub[idx], trial[idx], chosen[idx]] <- Q[sub[idx], trial[idx], chosen[idx]] + alpha[sub[idx]] * Delta[sub[idx], trial[idx], chosen[idx]];
-            }
-
         }
     }
 }
