@@ -37,6 +37,7 @@ transformed parameters {
                 Delta[sub[idx], trial[idx], chosen[idx]] <- outcome[idx] - Q[sub[idx], trial[idx], chosen[idx]];
 
                 Q[sub[idx], trial[idx], chosen[idx]] <- Q[sub[idx], trial[idx], chosen[idx]] + alpha[sub[idx]] * Delta[sub[idx], trial[idx], chosen[idx]];
+                //print("chosen = ", chosen[idx], " unchosen = ", unchosen[idx]);
         }
     }
 }
