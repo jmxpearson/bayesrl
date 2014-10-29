@@ -4,3 +4,4 @@ clean_data.csv
 .ipynb_checkpoints
 *.pdf
 *.csv
+.Rhistory
