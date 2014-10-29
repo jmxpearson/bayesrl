@@ -7,7 +7,8 @@ import pandas as pd
 
 if __name__ == '__main__':
     # read in data
-    df = pd.read_excel("data.xlsx")
+    df = pd.read_excel("data_aug.xlsx")
+    df = df.sort(['SubjNum', 'RunNum', 'TrialNum'])
 
     # take only the columns we want
     to_keep = ['SubjNum', 'AgeGroup', 'TrialNum', 'RunNum', 'DelayCond', 'CueLeftPic', 'CueRightPic', 
