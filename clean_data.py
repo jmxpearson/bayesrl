@@ -4,10 +4,18 @@ Clean memory task data and prepare for use in Stan model.
 from __future__ import division
 import numpy as np
 import pandas as pd
+import sys
 
 if __name__ == '__main__':
+    # file names
+    infile = sys.argv[1]
+    if sys.argv[2] == '-o':
+        outfile = sys.argv[3]
+    else:
+        outfile = "clean_data.csv"
+
     # read in data
-    df = pd.read_excel("data_aug.xlsx")
+    df = pd.read_excel(infile)
     df = df.sort(['SubjNum', 'RunNum', 'TrialNum'])
 
     # take only the columns we want
@@ -42,4 +50,4 @@ if __name__ == '__main__':
     df_red['SubjNum'] = consec_nums + 1
     
     # write to csv
-    df_red.to_csv("clean_data.csv")
+    df_red.to_csv(outfile)
