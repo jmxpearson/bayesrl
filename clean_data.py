@@ -9,7 +9,7 @@ import sys
 if __name__ == '__main__':
     # file names
     infile = sys.argv[1]
-    if sys.argv[2] == '-o':
+    if len(sys.argv) > 2 and sys.argv[2] == '-o':
         outfile = sys.argv[3]
     else:
         outfile = "clean_data.csv"

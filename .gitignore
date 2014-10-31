@@ -5,3 +5,5 @@ clean_data.csv
 *.pdf
 *.csv
 .Rhistory
+*.npy
+*.json

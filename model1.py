@@ -15,10 +15,10 @@ if __name__ == '__main__':
 
     # file names
     infile = sys.argv[1]
-    if sys.argv[2] == '-o':
+    if len(sys.argv) > 2 and sys.argv[2] == '-o':
         outfile = sys.argv[3]
     else:
-        outfile = "samples.json"
+        outfile = "samples"
 
     # read in
     df = pd.read_csv(infile)
@@ -52,8 +52,8 @@ if __name__ == '__main__':
     fit = sm.sampling(data=ddict, chains=2, init=initfun)
 
     # extract samples
-    samples = fit.extract()
+    samples = fit.extract(permuted=False)
 
     # write it out
-    with open(outfile) as fp:
-        json.dump(samples, fp)
+    np.save(outfile, samples)
+    json.dump(fit.flatnames, open(outfile + "_header.json", 'w'))
