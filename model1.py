@@ -2,14 +2,13 @@
 Runs Model1, a Bayesian RL model with hierarchical group effects, on 
 input csv file. Usage:
 python model1.py <infile> -o <outfile>
-If <outfile> is unspecified, defaults to "samples.csv"
+If <outfile> is unspecified, defaults to "results.xlsx"
 """
 from __future__ import division
 import numpy as np
 import pandas as pd
 import pystan
 import sys
-import json
 
 if __name__ == '__main__':
 
@@ -18,7 +17,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 2 and sys.argv[2] == '-o':
         outfile = sys.argv[3]
     else:
-        outfile = "samples"
+        outfile = "results.xlsx"
 
     # read in
     df = pd.read_csv(infile)
@@ -52,8 +51,16 @@ if __name__ == '__main__':
     fit = sm.sampling(data=ddict, chains=2, init=initfun)
 
     # extract samples
-    samples = fit.extract(permuted=False)
+    samples = fit.extract()
 
-    # write it out
-    np.save(outfile, samples)
-    json.dump(fit.flatnames, open(outfile + "_header.json", 'w'))
+    # prepare variables to write out
+    D = np.median(samples['Delta'], 0)  # prediction error
+    sub_alpha = np.median(samples['alpha'], 0)
+
+    with pd.ExcelWriter(outfile) as writer:
+        for sub in xrange(ddict['Nsub']):
+            df = pd.DataFrame(D[sub])
+            df.to_excel(writer, sheet_name='Subject' + str(sub))
+
+        df = pd.DataFrame(sub_alpha)
+        df.to_excel(writer, sheet_name='Learning Rates')
