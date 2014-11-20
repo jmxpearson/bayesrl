@@ -60,6 +60,7 @@ if __name__ == '__main__':
 
     with pd.ExcelWriter(outfile) as writer:
         for sub in xrange(ddict['Nsub']):
+            print "Writing subject {}".format(sub)
             df = pd.DataFrame(D[sub])
             df.to_excel(writer, sheet_name='RPE_Subject' + str(sub))
             df = pd.DataFrame(Q[sub])
