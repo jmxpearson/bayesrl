@@ -55,12 +55,15 @@ if __name__ == '__main__':
 
     # prepare variables to write out
     D = np.median(samples['Delta'], 0)  # prediction error
+    Q = np.median(samples['Q'], 0)  # expected value/Q-value
     sub_alpha = np.median(samples['alpha'], 0)
 
     with pd.ExcelWriter(outfile) as writer:
         for sub in xrange(ddict['Nsub']):
             df = pd.DataFrame(D[sub])
-            df.to_excel(writer, sheet_name='Subject' + str(sub))
+            df.to_excel(writer, sheet_name='RPE_Subject' + str(sub))
+            df = pd.DataFrame(Q[sub])
+            df.to_excel(writer, sheet_name='EV_Subject' + str(sub))
 
         df = pd.DataFrame(sub_alpha)
         df.to_excel(writer, sheet_name='Learning Rates')
