@@ -42,7 +42,7 @@ if __name__ == '__main__':
 
     # choose inits
     def initfun():
-        return {'beta': np.zeros((ddict['Nsub'],)), 
+        return {'beta': np.ones((ddict['Nsub'],)), 
                 'alpha': np.random.rand(ddict['Nsub']),
                 'a': np.ones((ddict['Ngroup'],)),
                 'b': np.ones((ddict['Ngroup'],))}
