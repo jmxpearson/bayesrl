@@ -59,7 +59,7 @@ transformed parameters {
 }
 
 model {
-    beta ~ normal(0, 5);
+    beta ~ gamma(1, 0.2);
     a ~ gamma(1, 1);
     b ~ gamma(1, 1);
 
