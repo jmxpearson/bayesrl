@@ -68,3 +68,11 @@ if __name__ == '__main__':
 
         df = pd.DataFrame(sub_alpha)
         df.to_excel(writer, sheet_name='Learning Rates')
+
+    # write out predicted learning rate samples for plotting
+    if len(samples['alpha_pred'].shape) == 1:
+        cols = ['Younger']
+    else:
+        cols = ['Younger', 'Older']
+    preds = pd.DataFrame(samples['alpha_pred'], columns=cols)
+    preds.to_csv('Model1_preds.csv')
