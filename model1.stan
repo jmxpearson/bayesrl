@@ -10,8 +10,8 @@ data {
     int<lower = 0> Ntrial;  // number of trials per subject
     int<lower = 0> Ngroup;  // number of experimental groups 
     int<lower = 0> sub[N];  // subject index 
-    int<lower = 0> chosen[N];  // index of chosen option
-    int<lower = 0> unchosen[N];  // index of unchosen option 
+    int<lower = 0> chosen[N];  // index of chosen option: 0 => missing
+    int<lower = 0> unchosen[N];  // index of unchosen option: 0 => missing
     int<lower = 1> trial[N];  // trial number
     int<lower = -1, upper = 1> outcome[N];  // outcome: -1 => missing
     int<lower = 1> group[Nsub];  // group assignment for each subject
@@ -35,9 +35,9 @@ transformed parameters {
                 Delta[sub[idx], trial[idx], c] <- 0;
             }
         }
-        else {  // carry forward last trial's values
+        if (trial[idx] < Ntrial) {  // push forward this trial's values
             for (c in 1:Ncue) {
-                Q[sub[idx], trial[idx], c] <- Q[sub[idx], trial[idx] - 1, c];
+                Q[sub[idx], trial[idx] + 1, c] <- Q[sub[idx], trial[idx], c];
                 Delta[sub[idx], trial[idx], c] <- 0;
             }
         }
@@ -49,11 +49,13 @@ transformed parameters {
                 // prediction error: unchosen option
                 Delta[sub[idx], trial[idx], unchosen[idx]] <- (1 - outcome[idx]) - Q[sub[idx], trial[idx], unchosen[idx]];
 
-                // update chosen option
-                Q[sub[idx], trial[idx], chosen[idx]] <- Q[sub[idx], trial[idx], chosen[idx]] + alpha[sub[idx]] * Delta[sub[idx], trial[idx], chosen[idx]];
+                if (trial[idx] < Ntrial) {  // update action values for next trial
+                    // update chosen option
+                    Q[sub[idx], trial[idx] + 1, chosen[idx]] <- Q[sub[idx], trial[idx], chosen[idx]] + alpha[sub[idx]] * Delta[sub[idx], trial[idx], chosen[idx]];
 
-                // update unchosen option
-                Q[sub[idx], trial[idx], chosen[idx]] <- Q[sub[idx], trial[idx], unchosen[idx]] + alpha[sub[idx]] * Delta[sub[idx], trial[idx], unchosen[idx]];
+                    // update unchosen option
+                    Q[sub[idx], trial[idx] + 1, unchosen[idx]] <- Q[sub[idx], trial[idx], unchosen[idx]] + alpha[sub[idx]] * Delta[sub[idx], trial[idx], unchosen[idx]];
+                }
         }
     }
 }

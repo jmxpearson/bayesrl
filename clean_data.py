@@ -50,4 +50,4 @@ if __name__ == '__main__':
     df_red['SubjNum'] = consec_nums + 1
     
     # write to csv
-    df_red.to_csv(outfile)
+    df_red.to_csv(outfile, index=False)
