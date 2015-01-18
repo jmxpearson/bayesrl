@@ -19,7 +19,7 @@ data {
 }
 
 parameters {
-    vector[Nsub] beta;  // softmax parameter
+    vector<lower = 0>[Nsub] beta;  // softmax parameter
     real<lower = 0, upper = 1> alpha[Nsub];  // learning rate
     real<lower = 0> a[Ngroup];  // parameter for group-specific alpha
     real<lower = 0> b[Ngroup];  // parameter for group-specific alpha
