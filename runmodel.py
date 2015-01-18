@@ -56,6 +56,7 @@ if __name__ == '__main__':
     ddict['Ntrial'] = np.max(df['Trial'])
     ddict['Ngroup'] = len(df['AgeGroup'].unique())
     ddict['Ncond'] = len(df['DelayCond'].unique())
+    ddict['Nrun'] = len(df['RunNum'].unique())
     ddict['sub'] = df['SubjNum']
     ddict['chosen'] = df['Chosen'].fillna(0).astype('int')
     ddict['unchosen'] = df['Unchosen'].fillna(0).astype('int')
@@ -63,6 +64,7 @@ if __name__ == '__main__':
     ddict['outcome'] = df['Outcome'].fillna(-1).astype('int')
     ddict['group'] = df[['AgeGroup', 'SubjNum']].drop_duplicates()['AgeGroup']
     ddict['condition'] = df['DelayCond'].fillna(0).astype('int')
+    ddict['run'] = df['RunNum'].fillna(0).astype('int')
 
     # # compile stan model
     np.random.seed(seed)
