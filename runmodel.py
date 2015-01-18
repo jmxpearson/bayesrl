@@ -55,6 +55,7 @@ if __name__ == '__main__':
     ddict['Ncue'] = sum(~np.isnan(df['Chosen'].unique()))
     ddict['Ntrial'] = np.max(df['Trial'])
     ddict['Ngroup'] = len(df['AgeGroup'].unique())
+    ddict['Ncond'] = len(df['DelayCond'].unique())
     ddict['sub'] = df['SubjNum']
     ddict['chosen'] = df['Chosen'].fillna(0).astype('int')
     ddict['unchosen'] = df['Unchosen'].fillna(0).astype('int')
