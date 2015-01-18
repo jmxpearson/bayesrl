@@ -45,6 +45,9 @@ if __name__ == '__main__':
     # keep code for delay condition as 1/2, with 2 for delay
     df_red['DelayCond'] = df_red['DelayCond']
 
+    # recode run indexed from 0
+    df_red['RunNum'] = df_red['RunNum'] + 1
+
     # renumber subjects consecutively
     _, consec_nums = np.unique(df_red['SubjNum'], return_inverse=True)
     df_red['SubjNum'] = consec_nums + 1
