@@ -61,6 +61,7 @@ if __name__ == '__main__':
     ddict['trial'] = df['Trial']
     ddict['outcome'] = df['Outcome'].fillna(-1).astype('int')
     ddict['group'] = df[['AgeGroup', 'SubjNum']].drop_duplicates()['AgeGroup']
+    ddict['condition'] = df['DelayCond'].fillna(0).astype('int')
 
     # # compile stan model
     np.random.seed(seed)

@@ -42,8 +42,8 @@ if __name__ == '__main__':
     df_red = df_red.drop(['CueLeftPic', 'CueRightPic', 
         'CueChosen', 'CueL', 'CueR'], axis=1)
 
-    # recode delay condition as 0/1, with 1 for delay
-    df_red['DelayCond'] = df_red['DelayCond'] - 1
+    # keep code for delay condition as 1/2, with 2 for delay
+    df_red['DelayCond'] = df_red['DelayCond']
 
     # renumber subjects consecutively
     _, consec_nums = np.unique(df_red['SubjNum'], return_inverse=True)
