@@ -65,16 +65,9 @@ if __name__ == '__main__':
     # # compile stan model
     np.random.seed(seed)
     sm = pystan.StanModel(file=modfile)
-
-    # choose inits
-    def initfun():
-        return {'beta': np.ones((ddict['Nsub'],)), 
-                'alpha': np.random.rand(ddict['Nsub']),
-                'a': np.ones((ddict['Ngroup'],)),
-                'b': np.ones((ddict['Ngroup'],))}
-
+    
     # run it
-    fit = sm.sampling(data=ddict, chains=2, init=initfun)
+    fit = sm.sampling(data=ddict, chains=2)
 
     # extract samples
     samples = fit.extract()
