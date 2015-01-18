@@ -1,7 +1,8 @@
 // Model 1:
 // Model 0a + different learning rate distributions for different groups
-// Because Stan will not allow for integer parameters (to specify two 
-// different Betas, we will generate Gammas and normalize)
+// Because Stan will not allow for integer parameters, to specify two 
+// different Beta priors on learning rates for the different groups, we will 
+// put gamma priors on the parameters of the Beta prior
 
 data {
     int<lower = 0> N;  // number of observations
