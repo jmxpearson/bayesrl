@@ -65,7 +65,7 @@ if __name__ == '__main__':
     # # compile stan model
     np.random.seed(seed)
     sm = pystan.StanModel(file=modfile)
-    
+
     # run it
     fit = sm.sampling(data=ddict, chains=2)
 
@@ -88,10 +88,13 @@ if __name__ == '__main__':
         df = pd.DataFrame(sub_alpha)
         df.to_excel(writer, sheet_name='Learning Rates')
 
-    # write out predicted learning rate samples for plotting
-    if len(samples['alpha_pred'].shape) == 1:
-        cols = ['Younger']
-    else:
-        cols = ['Younger', 'Older']
-    preds = pd.DataFrame(samples['alpha_pred'], columns=cols)
-    preds.to_csv('Model1_preds.csv')
+    try:
+        # write out predicted learning rate samples for plotting
+        if len(samples['alpha_pred'].shape) == 1:
+            cols = ['Younger']
+        else:
+            cols = ['Younger', 'Older']
+        preds = pd.DataFrame(samples['alpha_pred'], columns=cols)
+        preds.to_csv('Model_preds.csv')
+    except:
+        pass
