@@ -81,7 +81,6 @@ generated quantities {  // generate samples of learning rate from each group
     for (grp in 1:Ngroup) {
         for (cond in 1:Ncond) {
             alpha_pred[grp, cond] <- beta_rng(a[grp, cond], b[grp, cond]);
-
         }
     }
 }
