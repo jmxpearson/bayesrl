@@ -1,11 +1,6 @@
 """
 Runs a specified Bayesian RL model on an input csv file.
 For usage, do python runmodel.py --help.
-
-Model1, a Bayesian RL model with hierarchical group effects, on 
-input csv file. Usage:
-python model1.py <infile> -o <outfile>
-If <outfile> is unspecified, defaults to "results.xlsx"
 """
 from __future__ import division
 import numpy as np
@@ -19,8 +14,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Run a Bayesian hierarchical model")
     parser.add_argument("model", help="name of model file")
     parser.add_argument("input", help="input file name in csv format")
-    parser.add_argument("-o", "--output", help="input file name in csv format; defaults to results.xlsx",
-        default="results.xlsx")
+    parser.add_argument("-o", "--output", help="input file name in csv format; defaults to results.xlsx", default="results.xlsx")
+
     parser.add_argument("-s", "--seed", help="random seed for simulation", 
         type=int, default=77752)
     args = parser.parse_args()
@@ -80,6 +75,8 @@ if __name__ == '__main__':
     D = np.median(samples['Delta'], 0)  # prediction error
     Q = np.median(samples['Q'], 0)  # expected value/Q-value
     sub_alpha = np.median(samples['alpha'], 0)
+    if 'beta' in samples:
+        sub_beta = np.median(samples['beta'], 0)
 
     with pd.ExcelWriter(outfile) as writer:
         for sub in xrange(ddict['Nsub']):
@@ -91,14 +88,31 @@ if __name__ == '__main__':
 
         df = pd.DataFrame(sub_alpha)
         df.to_excel(writer, sheet_name='Learning Rates')
+        if sub_beta is not None:
+            df_beta = pd.DataFrame(sub_beta)
+            df_beta.to_excel(writer, sheet_name='Softmax Parameters')
 
     try:
-        # write out predicted learning rate samples for plotting
-        if len(samples['alpha_pred'].shape) == 1:
-            cols = ['Younger']
+        alphas = samples['alpha_pred']
+        dims = alphas.shape
+        grpnames = ['Younger', 'Older']
+        condnames = ['Condition1', 'Condition2']
+
+        # now figure out what variables we included in alpha
+        if len(dims) > 2:
+            ngroups = dims[1]
+            grps = grpnames[:ngroups]
+            nconds = dims[2]  # can be condition or run
+            conds = condnames[:nconds]
+            preds = pd.Panel(alphas, major_axis=grps, minor_axis=conds)
+            preds = preds.to_frame().transpose()
+        elif len(dims) > 1:
+            ngroups = dims[1]
+            grps = grpnames[:ngroups]
+            preds = pd.DataFrame(alphas, columns=grps)
         else:
-            cols = ['Younger', 'Older']
-        preds = pd.DataFrame(samples['alpha_pred'], columns=cols)
+            preds = pd.Series(alphas)
+
         preds.to_csv('Model_preds.csv')
     except:
-        pass
+        print "Sorry, but there was an error writing the model predictions file."
