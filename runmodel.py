@@ -77,6 +77,8 @@ if __name__ == '__main__':
     sub_alpha = np.median(samples['alpha'], 0)
     if 'beta' in samples:
         sub_beta = np.median(samples['beta'], 0)
+    else:
+        sub_beta = None
 
     with pd.ExcelWriter(outfile) as writer:
         for sub in xrange(ddict['Nsub']):
