@@ -26,29 +26,29 @@ transformed parameters {
     for (idx in 1:N) {
         if (trial[idx] == 1) {
             for (c in 1:Ncue) {
-                Q[sub[idx], trial[idx], c] <- 0.5;
-                Delta[sub[idx], trial[idx], c] <- 0;
+                Q[sub[idx], trial[idx], c] = 0.5;
+                Delta[sub[idx], trial[idx], c] = 0;
             }
         }
         else {  // carry forward last trial's values
             for (c in 1:Ncue) {
-                Q[sub[idx], trial[idx], c] <- Q[sub[idx], trial[idx] - 1, c];
-                Delta[sub[idx], trial[idx], c] <- 0;
+                Q[sub[idx], trial[idx], c] = Q[sub[idx], trial[idx] - 1, c];
+                Delta[sub[idx], trial[idx], c] = 0;
             }
         }
 
         if (outcome[idx] >= 0) {
                 // prediction error: chosen option
-                Delta[sub[idx], trial[idx], chosen[idx]] <- outcome[idx] - Q[sub[idx], trial[idx], chosen[idx]];
+                Delta[sub[idx], trial[idx], chosen[idx]] = outcome[idx] - Q[sub[idx], trial[idx], chosen[idx]];
 
                 // prediction error: unchosen option
-                Delta[sub[idx], trial[idx], unchosen[idx]] <- (1 - outcome[idx]) - Q[sub[idx], trial[idx], unchosen[idx]];
+                Delta[sub[idx], trial[idx], unchosen[idx]] = (1 - outcome[idx]) - Q[sub[idx], trial[idx], unchosen[idx]];
 
                 // update chosen option
-                Q[sub[idx], trial[idx], chosen[idx]] <- Q[sub[idx], trial[idx], chosen[idx]] + alpha[sub[idx]] * Delta[sub[idx], trial[idx], chosen[idx]];
+                Q[sub[idx], trial[idx], chosen[idx]] = Q[sub[idx], trial[idx], chosen[idx]] + alpha[sub[idx]] * Delta[sub[idx], trial[idx], chosen[idx]];
 
                 // update unchosen option
-                Q[sub[idx], trial[idx], chosen[idx]] <- Q[sub[idx], trial[idx], unchosen[idx]] + alphau[sub[idx]] * Delta[sub[idx], trial[idx], unchosen[idx]];
+                Q[sub[idx], trial[idx], chosen[idx]] = Q[sub[idx], trial[idx], unchosen[idx]] + alphau[sub[idx]] * Delta[sub[idx], trial[idx], unchosen[idx]];
         }
     }
 }

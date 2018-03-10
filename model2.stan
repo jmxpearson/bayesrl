@@ -31,30 +31,30 @@ transformed parameters {
     for (idx in 1:N) {
         if (trial[idx] == 1) {
             for (c in 1:Ncue) {
-                Q[sub[idx], trial[idx], c] <- 0.5;
-                Delta[sub[idx], trial[idx], c] <- 0;
+                Q[sub[idx], trial[idx], c] = 0.5;
+                Delta[sub[idx], trial[idx], c] = 0;
             }
         }
         if (trial[idx] < Ntrial) {  // push forward this trial's values
             for (c in 1:Ncue) {
-                Q[sub[idx], trial[idx] + 1, c] <- Q[sub[idx], trial[idx], c];
-                Delta[sub[idx], trial[idx], c] <- 0;
+                Q[sub[idx], trial[idx] + 1, c] = Q[sub[idx], trial[idx], c];
+                Delta[sub[idx], trial[idx], c] = 0;
             }
         }
 
         if (outcome[idx] >= 0) {
                 // prediction error: chosen option
-                Delta[sub[idx], trial[idx], chosen[idx]] <- outcome[idx] - Q[sub[idx], trial[idx], chosen[idx]];
+                Delta[sub[idx], trial[idx], chosen[idx]] = outcome[idx] - Q[sub[idx], trial[idx], chosen[idx]];
 
                 // prediction error: unchosen option
-                Delta[sub[idx], trial[idx], unchosen[idx]] <- (1 - outcome[idx]) - Q[sub[idx], trial[idx], unchosen[idx]];
+                Delta[sub[idx], trial[idx], unchosen[idx]] = (1 - outcome[idx]) - Q[sub[idx], trial[idx], unchosen[idx]];
 
                 if (trial[idx] < Ntrial) {  // update action values for next trial
                     // update chosen option
-                    Q[sub[idx], trial[idx] + 1, chosen[idx]] <- Q[sub[idx], trial[idx], chosen[idx]] + alpha[sub[idx], condition[idx]] * Delta[sub[idx], trial[idx], chosen[idx]];
+                    Q[sub[idx], trial[idx] + 1, chosen[idx]] = Q[sub[idx], trial[idx], chosen[idx]] + alpha[sub[idx], condition[idx]] * Delta[sub[idx], trial[idx], chosen[idx]];
 
                     // update unchosen option
-                    Q[sub[idx], trial[idx] + 1, unchosen[idx]] <- Q[sub[idx], trial[idx], unchosen[idx]] + alpha[sub[idx], condition[idx]] * Delta[sub[idx], trial[idx], unchosen[idx]];
+                    Q[sub[idx], trial[idx] + 1, unchosen[idx]] = Q[sub[idx], trial[idx], unchosen[idx]] + alpha[sub[idx], condition[idx]] * Delta[sub[idx], trial[idx], unchosen[idx]];
                 }
         }
     }
@@ -86,7 +86,7 @@ generated quantities {  // generate samples of learning rate from each group
     real<lower=0, upper=1> alpha_pred[Ngroup, Ncond];
     for (grp in 1:Ngroup) {
         for (cond in 1:Ncond) {
-            alpha_pred[grp, cond] <- beta_rng(a[grp, cond], b[grp, cond]);
+            alpha_pred[grp, cond] = beta_rng(a[grp, cond], b[grp, cond]);
         }
     }
 }

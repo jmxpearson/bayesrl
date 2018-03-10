@@ -3,9 +3,9 @@ data {
     int<lower = 0> Nsub;  // number of subjects
     int<lower = 0> Ncue;  // number of cues
     int<lower = 0> Ntrial;  // number of trials per subject
-    int<lower = 0> sub[N];  // subject index 
+    int<lower = 0> sub[N];  // subject index
     int<lower = 0> chosen[N];  // index of chosen option
-    int<lower = 0> unchosen[N];  // index of unchosen option 
+    int<lower = 0> unchosen[N];  // index of unchosen option
     int<lower = 1> trial[N];  // trial number
     int<lower = -1, upper = 1> outcome[N];  // outcome: -1 => missing
 }
@@ -22,28 +22,28 @@ transformed parameters {
     for (idx in 1:N) {
         if (trial[idx] == 1) {
             for (c in 1:Ncue) {
-                Q[sub[idx], trial[idx], c] <- 0.5;
-                Delta[sub[idx], trial[idx], c] <- 0;
+                Q[sub[idx], trial[idx], c] = 0.5;
+                Delta[sub[idx], trial[idx], c] = 0;
             }
         }
         else {  // carry forward last trial's values
             for (c in 1:Ncue) {
-                Q[sub[idx], trial[idx], c] <- Q[sub[idx], trial[idx] - 1, c];
-                Delta[sub[idx], trial[idx], c] <- 0;
+                Q[sub[idx], trial[idx], c] = Q[sub[idx], trial[idx] - 1, c];
+                Delta[sub[idx], trial[idx], c] = 0;
             }
         }
 
         if (outcome[idx] >= 0) {
                 // prediction error: chosen option
-                Delta[sub[idx], trial[idx], chosen[idx]] <- outcome[idx] - Q[sub[idx], trial[idx], chosen[idx]];
+                Delta[sub[idx], trial[idx], chosen[idx]] = outcome[idx] - Q[sub[idx], trial[idx], chosen[idx]];
 
                 // update chosen option
-                Q[sub[idx], trial[idx], chosen[idx]] <- Q[sub[idx], trial[idx], chosen[idx]] + alpha[sub[idx]] * Delta[sub[idx], trial[idx], chosen[idx]];
+                Q[sub[idx], trial[idx], chosen[idx]] = Q[sub[idx], trial[idx], chosen[idx]] + alpha[sub[idx]] * Delta[sub[idx], trial[idx], chosen[idx]];
 
         }
     }
 }
- 
+
 model {
     beta ~ normal(0, 5);
     alpha ~ beta(1, 1);

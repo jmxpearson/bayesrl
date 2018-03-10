@@ -40,7 +40,7 @@ if __name__ == '__main__':
     try:
         df = pd.read_csv(infile)
     except:
-        print "Sorry, can't find {}".format(infile)
+        print("Sorry, can't find {}".format(infile))
         sys.exit(1)
 
     # make a data dictionary to be read by Stan
@@ -81,8 +81,8 @@ if __name__ == '__main__':
         sub_beta = None
 
     with pd.ExcelWriter(outfile) as writer:
-        for sub in xrange(ddict['Nsub']):
-            print "Writing subject {}".format(sub)
+        for sub in range(ddict['Nsub']):
+            print("Writing subject {}".format(sub))
             df = pd.DataFrame(D[sub])
             df.to_excel(writer, sheet_name='RPE_Subject' + str(sub))
             df = pd.DataFrame(Q[sub])
@@ -117,4 +117,4 @@ if __name__ == '__main__':
 
         preds.to_csv('Model_preds.csv')
     except:
-        print "Sorry, but there was an error writing the model predictions file."
+        print("Sorry, but there was an error writing the model predictions file.")
