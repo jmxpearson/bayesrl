@@ -16,7 +16,7 @@ if __name__ == '__main__':
     parser.add_argument("input", help="input file name in csv format")
     parser.add_argument("-o", "--output", help="input file name in csv format; defaults to results.xlsx", default="results.xlsx")
 
-    parser.add_argument("-s", "--seed", help="random seed for simulation", 
+    parser.add_argument("-s", "--seed", help="random seed for simulation",
         type=int, default=77752)
     args = parser.parse_args()
 
@@ -93,6 +93,9 @@ if __name__ == '__main__':
         if sub_beta is not None:
             df_beta = pd.DataFrame(sub_beta)
             df_beta.to_excel(writer, sheet_name='Softmax Parameters')
+
+        df = pd.DataFrame(samples['log_lik'])
+        df.to_excel(writer, sheet_name='Log posterior samples')
 
     try:
         alphas = samples['alpha_pred']

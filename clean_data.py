@@ -16,10 +16,10 @@ if __name__ == '__main__':
 
     # read in data
     df = pd.read_excel(infile)
-    df = df.sort(['SubjNum', 'RunNum', 'TrialNum'])
+    df = df.sort_values(['SubjNum', 'RunNum', 'TrialNum'])
 
     # take only the columns we want
-    to_keep = ['SubjNum', 'AgeGroup', 'TrialNum', 'RunNum', 'DelayCond', 'CueLeftPic', 'CueRightPic', 
+    to_keep = ['SubjNum', 'AgeGroup', 'TrialNum', 'RunNum', 'DelayCond', 'CueLeftPic', 'CueRightPic',
            'CueChosen', 'Outcome']
     df_red = df[to_keep].copy()
 
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     df_red['Trial'] = df_red['TrialNum'] + df_red['RunNum'] * Ntrials
 
     # drop redundant columns
-    df_red = df_red.drop(['CueLeftPic', 'CueRightPic', 
+    df_red = df_red.drop(['CueLeftPic', 'CueRightPic',
         'CueChosen', 'CueL', 'CueR'], axis=1)
 
     # keep code for delay condition as 1/2, with 2 for delay
@@ -51,6 +51,6 @@ if __name__ == '__main__':
     # renumber subjects consecutively
     _, consec_nums = np.unique(df_red['SubjNum'], return_inverse=True)
     df_red['SubjNum'] = consec_nums + 1
-    
+
     # write to csv
     df_red.to_csv(outfile, index=False)

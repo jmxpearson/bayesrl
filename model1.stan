@@ -1,7 +1,7 @@
 // Model 1:
 // Model 0a + different learning rate distributions for different groups
-// Because Stan will not allow for integer parameters, to specify two 
-// different Beta priors on learning rates for the different groups, we will 
+// Because Stan will not allow for integer parameters, to specify two
+// different Beta priors on learning rates for the different groups, we will
 // put gamma priors on the parameters of the Beta prior
 
 data {
@@ -9,8 +9,8 @@ data {
     int<lower = 0> Nsub;  // number of subjects
     int<lower = 0> Ncue;  // number of cues
     int<lower = 0> Ntrial;  // number of trials per subject
-    int<lower = 0> Ngroup;  // number of experimental groups 
-    int<lower = 0> sub[N];  // subject index 
+    int<lower = 0> Ngroup;  // number of experimental groups
+    int<lower = 0> sub[N];  // subject index
     int<lower = 0> chosen[N];  // index of chosen option: 0 => missing
     int<lower = 0> unchosen[N];  // index of unchosen option: 0 => missing
     int<lower = 1> trial[N];  // trial number
@@ -79,8 +79,14 @@ model {
 
 generated quantities {  // generate samples of learning rate from each group
     real<lower=0, upper=1> alpha_pred[Ngroup];
+    vector[N] log_lik;
     for (grp in 1:Ngroup) {
         alpha_pred[grp] = beta_rng(a[grp], b[grp]);
     }
+
+    for (idx in 1:N) {
+        if (chosen[idx] > 0) {
+            log_lik[idx] = bernoulli_logit_lpmf(1 | beta[sub[idx]] * (Q[sub[idx], trial[idx], chosen[idx]] - Q[sub[idx], trial[idx], unchosen[idx]]));
+        }
+    }
 }
- 
