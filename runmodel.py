@@ -72,9 +72,18 @@ if __name__ == '__main__':
     samples = fit.extract()
 
     # prepare variables to write out
-    D = np.median(samples['Delta'], 0)  # prediction error
-    Q = np.median(samples['Q'], 0)  # expected value/Q-value
-    sub_alpha = np.median(samples['alpha'], 0)
+    if 'Delta' in samples:
+        D = np.median(samples['Delta'], 0)  # prediction error
+    else:
+        D = None
+    if 'Q' in samples:
+        Q = np.median(samples['Q'], 0)  # expected value/Q-value
+    else:
+        Q = None
+    if 'alpha' in samples:
+        sub_alpha = np.median(samples['alpha'], 0)
+    else:
+        sub_alpha = None
     if 'beta' in samples:
         sub_beta = np.median(samples['beta'], 0)
     else:
@@ -83,19 +92,23 @@ if __name__ == '__main__':
     with pd.ExcelWriter(outfile) as writer:
         for sub in range(ddict['Nsub']):
             print("Writing subject {}".format(sub))
-            df = pd.DataFrame(D[sub])
-            df.to_excel(writer, sheet_name='RPE_Subject' + str(sub))
-            df = pd.DataFrame(Q[sub])
-            df.to_excel(writer, sheet_name='EV_Subject' + str(sub))
+            if D is not None:
+                df = pd.DataFrame(D[sub])
+                df.to_excel(writer, sheet_name='RPE_Subject' + str(sub))
+            if Q is not None:
+                df = pd.DataFrame(Q[sub])
+                df.to_excel(writer, sheet_name='EV_Subject' + str(sub))
 
-        df = pd.DataFrame(sub_alpha)
-        df.to_excel(writer, sheet_name='Learning Rates')
+        if sub_alpha is not None:
+            df = pd.DataFrame(sub_alpha)
+            df.to_excel(writer, sheet_name='Learning Rates')
         if sub_beta is not None:
             df_beta = pd.DataFrame(sub_beta)
             df_beta.to_excel(writer, sheet_name='Softmax Parameters')
 
-        df = pd.DataFrame(samples['log_lik'])
-        df.to_excel(writer, sheet_name='Log posterior samples')
+        if 'log_lik' in samples:
+            df = pd.DataFrame(samples['log_lik'])
+            df.to_excel(writer, sheet_name='Log posterior samples')
 
     try:
         alphas = samples['alpha_pred']
